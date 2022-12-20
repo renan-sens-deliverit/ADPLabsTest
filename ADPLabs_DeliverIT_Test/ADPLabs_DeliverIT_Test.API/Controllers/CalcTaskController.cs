@@ -1,16 +1,7 @@
+using ADPLabs_DeliverIT_Test.API.EF.Interfaces;
 using ADPLabs_DeliverIT_Test.API.Model;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
-using System.Net;
-using System.Text.Json.Serialization;
-using Newtonsoft.Json;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using ADPLabs_DeliverIT_Test.API.EF;
-using System.Text;
-using ADPLabs_DeliverIT_Test.API.EF.Interfaces;
 
 namespace ADPLabs_DeliverIT_Test.API.Controllers
 {
@@ -20,8 +11,6 @@ namespace ADPLabs_DeliverIT_Test.API.Controllers
     {
         readonly ICalcTaskRepository _calcTaskRepository;
         readonly IRequestPostCalc _requestPostCalcRepository;
-
-        private readonly string _urlBase = "https://interview.adpeai.com/api/v1";
 
         private readonly ILogger<CalcTaskController> _logger;
 
@@ -35,7 +24,7 @@ namespace ADPLabs_DeliverIT_Test.API.Controllers
         [HttpGet(Name = "GetCalcTask")]
         public ResponseCalcTaskResult? Get()
         {
-            _logger.LogInformation("Service GetCalcTask start at: " +  DateTime.Now.ToString());
+            _logger.LogInformation("Service GetCalcTask start at: " + DateTime.Now.ToString());
 
             string error = String.Empty;
             ResponseCalcTaskResult? retCalc = null;
@@ -46,20 +35,20 @@ namespace ADPLabs_DeliverIT_Test.API.Controllers
 
                 //Retry for 3 times if any error
                 int cont = 1;
-                 while (responseConverted == null && cont <= 3)
-                 {
-                     
-                     System.Threading.Thread.Sleep(3000);
+                while (responseConverted == null && cont <= 3)
+                {
 
-                     cont++;
-                     responseConverted = Service.ServiceAgent.GetTask(out error);
-                 }
+                    System.Threading.Thread.Sleep(3000);
+
+                    cont++;
+                    responseConverted = Service.ServiceAgent.GetTask(out error);
+                }
 
                 if (!String.IsNullOrEmpty(error))
                 {
                     throw new Exception(error);
                 }
-              
+
 
                 if (responseConverted != null)
                 {
@@ -67,7 +56,7 @@ namespace ADPLabs_DeliverIT_Test.API.Controllers
 
                     //Add object in memory
                     _calcTaskRepository.Save(responseConverted);
-                         
+
                     //Make the operation
                     requestPost = new RequestPostCalc();
                     requestPost.id = responseConverted.ID;
@@ -103,10 +92,10 @@ namespace ADPLabs_DeliverIT_Test.API.Controllers
 
                     _logger.LogInformation("Service GetCalcTask Finish at: " + DateTime.Now.ToString());
 
-                    retCalc =  new ResponseCalcTaskResult { ID = responseConverted.ID, Operation = responseConverted.Operation, Left = responseConverted.Left, Right = responseConverted.Right, Result = requestPost.result };
-                
+                    retCalc = new ResponseCalcTaskResult { ID = responseConverted.ID, Operation = responseConverted.Operation, Left = responseConverted.Left, Right = responseConverted.Right, Result = requestPost.result };
+
                 }
-                                                            
+
             }
             catch (Exception ex)
             {
@@ -119,6 +108,6 @@ namespace ADPLabs_DeliverIT_Test.API.Controllers
         }
 
 
-      
+
     }
 }

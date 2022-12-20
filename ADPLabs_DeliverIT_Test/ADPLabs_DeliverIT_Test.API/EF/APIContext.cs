@@ -1,7 +1,6 @@
 ﻿using ADPLabs_DeliverIT_Test.API.Model;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace ADPLabs_DeliverIT_Test.API.EF
 {
     public class ApiContext : DbContext

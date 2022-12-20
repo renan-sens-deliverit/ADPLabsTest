@@ -1,10 +1,7 @@
-﻿using ADPLabs_DeliverIT_Test.API.Controllers;
-using ADPLabs_DeliverIT_Test.API.EF;
-using ADPLabs_DeliverIT_Test.API.Model;
-using Microsoft.EntityFrameworkCore;
+﻿using ADPLabs_DeliverIT_Test.API.Model;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace ADPLabs_DeliverIT_Test.API.Service
@@ -42,7 +39,7 @@ namespace ADPLabs_DeliverIT_Test.API.Service
                     }
 
                     var responsePayload = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                    
+
                     if (!String.IsNullOrEmpty(responsePayload))
                     {
                         try
@@ -56,7 +53,7 @@ namespace ADPLabs_DeliverIT_Test.API.Service
                             throw;
                         }
                     }
-                   
+
                     return responseConverted;
 
                 }
@@ -70,7 +67,7 @@ namespace ADPLabs_DeliverIT_Test.API.Service
 
         }
 
-        public static bool PostTask(RequestPostCalc request ,out string error)
+        public static bool PostTask(RequestPostCalc request, out string error)
         {
             error = string.Empty;
 
@@ -106,7 +103,7 @@ namespace ADPLabs_DeliverIT_Test.API.Service
                 error = ex.Message;
                 return false;
             }
-          
+
         }
     }
 }

@@ -3,7 +3,7 @@ using ADPLabs_DeliverIT_Test.API.Model;
 
 namespace ADPLabs_DeliverIT_Test.API.EF
 {
-    public class CalcTaskRepository:ICalcTaskRepository
+    public class CalcTaskRepository : ICalcTaskRepository
     {
         public List<CalcTask> GetCalcTasks()
         {
@@ -20,18 +20,18 @@ namespace ADPLabs_DeliverIT_Test.API.EF
             using (var context = new ApiContext())
             {
 
-               var newCalc =  new CalcTask
+                var newCalc = new CalcTask
                 {
-                   ID = calc.ID,
-                   Left = calc.Left,
-                   Right = calc.Right,
-                   Operation = calc.Operation
-                 
+                    ID = calc.ID,
+                    Left = calc.Left,
+                    Right = calc.Right,
+                    Operation = calc.Operation
+
                 };
                 context.Add(newCalc);
                 context.SaveChanges();
             }
-           
+
         }
     }
 }

@@ -22,7 +22,7 @@ namespace ADPLabs_DeliverIT_Test.API.EF
 
                 var newRequest = new RequestPostCalc
                 {
-                    id= request.id, 
+                    id = request.id,
                     result = request.result
                 };
                 context.Add(newRequest);

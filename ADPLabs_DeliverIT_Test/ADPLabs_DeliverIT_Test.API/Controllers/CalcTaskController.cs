@@ -90,8 +90,6 @@ namespace ADPLabs_DeliverIT_Test.API.Controllers
                         throw new Exception(error);
                     }
 
-                    _logger.LogInformation("Service GetCalcTask Finish at: " + DateTime.Now.ToString());
-
                     retCalc = new ResponseCalcTaskResult { ID = responseConverted.ID, Operation = responseConverted.Operation, Left = responseConverted.Left, Right = responseConverted.Right, Result = requestPost.result };
 
                 }

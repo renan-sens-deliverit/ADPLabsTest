@@ -1,12 +1,14 @@
 using ADPLabs_DeliverIT_Test.API.EF.Interfaces;
 using ADPLabs_DeliverIT_Test.API.Model;
+using ADPLabs_DeliverIT_Test.API.Service;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using System.Net;
+using System.Web.Http;
 
 namespace ADPLabs_DeliverIT_Test.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Microsoft.AspNetCore.Mvc.Route("[controller]")]
     public class CalcTaskController : ControllerBase
     {
         readonly ICalcTaskRepository _calcTaskRepository;
@@ -21,7 +23,7 @@ namespace ADPLabs_DeliverIT_Test.API.Controllers
             _calcTaskRepository = calcTaskRepository;
         }
 
-        [HttpGet(Name = "GetCalcTask")]
+        [Microsoft.AspNetCore.Mvc.HttpGet(Name = "GetCalcTask")]
         public ResponseCalcTaskResult? Get()
         {
             _logger.LogInformation("Service GetCalcTask start at: " + DateTime.Now.ToString());
@@ -32,6 +34,7 @@ namespace ADPLabs_DeliverIT_Test.API.Controllers
             {
                 RequestPostCalc? requestPost = null;
                 CalcTask? responseConverted = null;
+                Business? bu = null;
 
                 //Retry for 3 times if any error
                 int cont = 1;
@@ -57,28 +60,8 @@ namespace ADPLabs_DeliverIT_Test.API.Controllers
                     //Add object in memory
                     _calcTaskRepository.Save(responseConverted);
 
-                    //Make the operation
-                    requestPost = new RequestPostCalc();
-                    requestPost.id = responseConverted.ID;
-
-                    switch (responseConverted.Operation.ToLower())
-                    {
-                        case "subtraction":
-                            requestPost.result = responseConverted.Left - responseConverted.Right;
-                            break;
-                        case "multiplication":
-                            requestPost.result = responseConverted.Left * responseConverted.Right;
-                            break;
-                        case "division":
-                            requestPost.result = responseConverted.Left / responseConverted.Right;
-                            break;
-                        case "addition":
-                            requestPost.result = responseConverted.Left + responseConverted.Right;
-                            break;
-                        case "remainder":
-                            requestPost.result = responseConverted.Left % responseConverted.Right;
-                            break;
-                    }
+                    bu = new Business();
+                    requestPost = bu.MakeCalcAndResult(responseConverted);
 
                     //Add object in memory
                     _requestPostCalcRepository.Save(requestPost);
@@ -99,6 +82,11 @@ namespace ADPLabs_DeliverIT_Test.API.Controllers
             {
                 error = ex.Message;
                 _logger.LogError($"ErrorMessage:{ex.Message} - StackTrace:{ex.StackTrace} - Success:{false}");
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                {
+                    Content = new StringContent("An error occurred, please try again or contact the administrator."),
+                    ReasonPhrase = "Critical Exception"
+                });
             }
 
             _logger.LogInformation("Service GetCalcTask Finish at: " + DateTime.Now.ToString());
